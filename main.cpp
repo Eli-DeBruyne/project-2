@@ -14,6 +14,7 @@ void emptyString(char *A, int n)
 // copy a string A to B of length n
 void stringCopy(char *A, int n, char *B)
 {
+	cout << endl << n << endl;
 	for (int i = 0; i < n; i++)
 	{
 		B[i] = A[i];
@@ -29,14 +30,14 @@ int stringLength(char *A)
 	return size; // size is the last index position
 }
 
-char* toLowerCaseString(char* a) {
-    char* b = new char[stringLength(a) + 1];
-    for (int i = 0; a[i] != '\0'; i++) {
-        b[i] = a[i];
-    }
-    b[stringLength(a)] = '\0';
-    return b;
-}
+/*char* toLowerCaseString(char* a) {
+	char* b = new char[stringLength(a) + 1];
+	for (int i = 0; a[i] != '\0'; i++) {
+		b[i] = a[i];
+	}
+	b[stringLength(a)] = '\0';
+	return b;
+}*/
 
 class myString;
 
@@ -63,30 +64,28 @@ public:
 };
 
 // outputs a given string A
-ostream &operator<<(ostream &s, myString &A)
-{
+ostream& operator<<(ostream& s, myString& A) {
 	s << A.strArray;
 	return s;
 }
 
 // default constructor - initializes with a NULL as the first character
 myString::myString() {
-    size = 0;
-    strArray = new char[1];
-    strArray[0] = '\0';
+	size = 0;
+	strArray = new char[1];
+	strArray[0] = '\0';
 }
 
 // non default constructor - initialize object with an existing string
 myString::myString(char* inpStr) {
-    int i = 0;
-    while (inpStr[i] != '\0')
-        i++;
-    size = i;
-    strArray = new char[size+1];
-    emptyString(strArray, size);
-    for (int j = 0; j < size; j++)
-        strArray[j] = inpStr[j];
-    strArray[size] = '\0';
+	int i = 0;
+	while (inpStr[i] != '\0')
+		i++;
+	size = i;
+	strArray = new char[size];
+	emptyString(strArray, size+1);
+	for (int j = 0; j < size; j++)
+		strArray[j] = inpStr[j];
 }
 
 // non default constructor - initialize object with an existing mystring object
@@ -94,33 +93,27 @@ myString::myString(myString& B) {
     delete[] strArray;
     strArray = NULL;
     size = B.size;
-    strArray = new char[size+1];
+    strArray = new char[size];
     emptyString(strArray, size+1);
-    stringCopy(B.strArray, size+1, strArray);
-    strArray[size] = '\0';
+	cout << endl << size << endl;
+    stringCopy(B.strArray, size, strArray);
 }
 
-char *myString::getWord()
-{
+char* myString::getWord() {
 	return strArray;
 }
 
 // getter for size of myString
-int myString::Size()
-{
+int myString::Size() {
 	return size;
 }
 
-bool isUrl(char *n)
-{
-	if (stringLength(n) > 6)
-	{
-		if (n[0] == 'h' && n[1] == 't' && n[2] == 't' && n[3] == 'p' && n[4] == 's' && n[5] == ':' && n[6] == '/' && n[7] == '/')
-		{
+bool isUrl(char* n) {
+	if (stringLength(n) > 6) {
+		if (n[0] == 'h' && n[1] == 't' && n[2] == 't' && n[3] == 'p' && n[4] == 's' && n[5] == ':' && n[6] == '/' && n[7] == '/') {
 			return true;
 		}
-		if (n[0] == 'h' && n[1] == 't' && n[2] == 't' && n[3] == 'p' && n[4] == ':' && n[5] == '/' && n[6] == '/')
-		{
+		if (n[0] == 'h' && n[1] == 't' && n[2] == 't' && n[3] == 'p' && n[4] == ':' && n[5] == '/' && n[6] == '/') {
 			return true;
 		}
 	}
@@ -128,28 +121,27 @@ bool isUrl(char *n)
 }
 
 // overloading = operator - initialize object with an existing string
-// overloading = operator - initialize object with an existing string
 myString& myString::operator = (char* B) {
-    delete[] strArray;
-    strArray = NULL;
-    size = stringLength(B);
-    strArray = new char[size+1];
-    emptyString(strArray, size);
-    stringCopy(B, size, strArray);
-    strArray[size] = '\0';
-    return *this;
+	delete[] strArray;
+	strArray = NULL;
+	size = stringLength(B);
+	strArray = new char[size+1];
+	emptyString(strArray, size);
+	stringCopy(B, size, strArray);
+	strArray[size] = '\0';
+	return *this;
 }
 
 // overloading = operator - initialize object with an existing mystring object
 myString& myString::operator = (myString& B) {
-    delete[] strArray;
-    strArray = NULL;
-    size = B.size;
-    strArray = new char[size+1];
-    emptyString(strArray, size);
-    stringCopy(B.strArray, size, strArray);
-    strArray[size] = '\0';
-    return *this;
+	delete[] strArray;
+	strArray = NULL;
+	size = B.size;
+	strArray = new char[size+1];
+	emptyString(strArray, size);
+	stringCopy(B.strArray, size, strArray);
+	strArray[size] = '\0';
+	return *this;
 }
 
 // checking if two myString objects are the same - return true or false
@@ -164,8 +156,8 @@ bool myString::operator==(myString &B)
 	{
 		return false;
 	}
-	char *string1 = toLowerCaseString(this->strArray);
-	char *string2 = toLowerCaseString(B.strArray);
+	char *string1 = this->strArray;
+	char *string2 = B.strArray;
 	for (int i = 0; i < maxIndex; i++)
 	{
 		if (string1[i] != string2[i])
@@ -184,8 +176,8 @@ bool myString::operator==(myString &B)
 bool myString::operator<(myString &B)
 {
 	int maxIndex = 0;
-	char *string1 = toLowerCaseString(this->strArray);
-	char *string2 = toLowerCaseString(B.strArray);
+	char *string1 = this->strArray;
+	char *string2 = B.strArray;
 	if (this->size > B.size)
 	{
 		maxIndex = B.size;
@@ -222,8 +214,8 @@ bool myString::operator<(myString &B)
 bool myString::operator>(myString &B)
 {
 	int maxIndex = 0;
-	char *string1 = toLowerCaseString(this->strArray);
-	char *string2 = toLowerCaseString(B.strArray);
+	char *string1 = this->strArray;
+	char *string2 = B.strArray;
 	if (this->size > B.size)
 	{
 		maxIndex = B.size;
@@ -257,50 +249,36 @@ bool myString::operator>(myString &B)
 }
 
 // get one URL from redirected input and return it as a string
-char *getNextURL()
-{
+char* getNextURL() {
 	cout << "getNextUrl" << endl;
-	char *str = new char[50]; // assumes a max URL size of 50
+	char* str = new char[50]; //assumes a max URL size of 50
 	emptyString(str, 50);
 
 	char c;
 	int i = 0;
-	// read until the next white space or line-break
-	while (!cin.eof())
-	{
-		// cout << "beginning of while loop" << endl;
+	//read until the next white space or line-break 
+	while (!cin.eof()) {
 		cin.get(c);
-		// cout << "the current char [" << c << "]" << endl;
-		if (!cin.eof())
-		{
-			if ((c != '\n') && (c != ' '))
-			{
+		if (!cin.eof()) {
+			if ((c != '\n') && (c != ' ')) {
 				if (((c >= 'a') && (c <= 'z')) ||
 					((c >= 'A') && (c <= 'Z')) ||
 					((c >= '0') && (c <= '9')) ||
 					(c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
 					str[i++] = c;
 			}
-			else if ((c == '\n') && (i > 0))
-			{
+			else if ((c == '\n') && (i > 0)) {
 				return str;
 			}
-			else if ((c == ' ') && (i > 0))
-			{
+			else if ((c == ' ') && (i > 0)) {
 				return str;
 			}
-		}
-		// cout << "test" << endl;
 
-		// g++ -o main main.cpp && ./main < inputs
+		}
 	}
-	// modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
-	cout << "end of getNextURL" << endl;
-	if (i > 0 && isUrl(str))
-	{
-		return str;
-	}
-	else return NULL;
+	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
+	cout << "returnrf null" << endl;
+	return NULL;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,8 +314,8 @@ public:
 setOfURLs::setOfURLs()
 {
 	_size = 0;
-	_URLs = new myString[1];
-	_frequencies = new int[1];
+	_URLs = new myString[0];
+	_frequencies = new int[0];
 }
 
 // non default constructor - initializes with a known number of words
@@ -475,6 +453,7 @@ int setOfURLs::binarySearchAndInsert(myString &wordToFind)
 // method to add words to the setOfURLs object
 void setOfURLs::addURL(myString &newWord)
 {
+	cout << endl << "------" << newWord << "------" << endl;
 	// if there is already unassigend initlized value
 	for (int i = 0; i < _size; i++)
 	{
@@ -495,9 +474,13 @@ void setOfURLs::addURL(myString &newWord)
 	}
 	_frequencies[_size] = 1;
 	temp[_size] = newWord;
-	delete[] _URLs;
+	for(int i = 0; i < _size; i++){
+		cout << i << endl;
+		cout << temp[i] << endl;
+	}
+	//delete[] _URLs;
 	_URLs = temp;
-	delete[] temp;
+	//delete[] temp;
 	_size = _size + 1;
 }
 
@@ -629,11 +612,17 @@ int main()
 		 << "----------------------------------------------------------" << endl;
 	while (url != NULL)
 	{
-		cout << "beginning of while loop" << endl;
-		urlString = new myString(url); // create a myString object with the URL
-		cout << "after first line" << endl;
-		(*mySetOfURLs).addURL(*urlString); // add URL to mySetOfURLs
-		cout << "after second line" << endl;
+		cout << "beginning " << endl;
+		if(isUrl(url)){
+			urlString = new myString(url); // create a myString object with the URL
+			cout << "first line" << endl;
+			(*mySetOfURLs).addURL(*urlString); // add URL to mySetOfURLs
+			//delete[] url;
+		}
+		else{
+			//delete[] url;
+		}
+		cout << "second line" << endl;
 		url = getNextURL();
 		cout << "last line" << endl;
 	}
