@@ -14,13 +14,24 @@ void emptyString(char *A, int n)
 // copy a string A to B of length n
 void stringCopy(char *A, int n, char *B)
 {
-	cout << endl << n << endl;
 	for (int i = 0; i < n; i++)
 	{
 		B[i] = A[i];
 	}
 }
-
+void strCopy(string A, int n, string B)
+{
+	for (int i = 0; i < n; i++)
+	{
+		B[i] = A[i];
+	}
+}
+int strLength(string A){
+	int size = 0;
+	while (A[size] != '\0')
+		size++;
+	return size; // size is the last index position
+}
 // return the length of a given string A
 int stringLength(char *A)
 {
@@ -54,6 +65,7 @@ public:
 	myString();
 	myString(char *inpStr);
 	myString(myString &B);
+	myString(string inpStr);
 	int Size();
 	char *getWord();
 	bool operator==(myString &B);
@@ -61,6 +73,7 @@ public:
 	bool operator<(myString &B);
 	myString &operator=(myString &B);
 	myString &operator=(char *B);
+	myString &operator=(string B);
 };
 
 // outputs a given string A
@@ -87,15 +100,23 @@ myString::myString(char* inpStr) {
 	for (int j = 0; j < size; j++)
 		strArray[j] = inpStr[j];
 }
+myString::myString(string inpStr) {
+	int i = 0;
+	while (inpStr[i] != '\0')
+		i++;
+	size = i;
+	strArray = new char[size];
+	emptyString(strArray, size+1);
+	for (int j = 0; j < size; j++)
+		strArray[j] = inpStr[j];
+}
 
 // non default constructor - initialize object with an existing mystring object
 myString::myString(myString& B) {
-    delete[] strArray;
     strArray = NULL;
     size = B.size;
     strArray = new char[size];
     emptyString(strArray, size+1);
-	cout << endl << size << endl;
     stringCopy(B.strArray, size, strArray);
 }
 
@@ -108,8 +129,8 @@ int myString::Size() {
 	return size;
 }
 
-bool isUrl(char* n) {
-	if (stringLength(n) > 6) {
+bool isUrl(string n) {
+	if (strLength(n) > 6) {
 		if (n[0] == 'h' && n[1] == 't' && n[2] == 't' && n[3] == 'p' && n[4] == 's' && n[5] == ':' && n[6] == '/' && n[7] == '/') {
 			return true;
 		}
@@ -132,6 +153,17 @@ myString& myString::operator = (char* B) {
 	return *this;
 }
 
+myString& myString::operator = (string B) {
+	delete[] strArray;
+	strArray = NULL;
+	size = strLength(B);
+	strArray = new char[size+1];
+	emptyString(strArray, size);
+	strCopy(B, size, strArray);
+	strArray[size] = '\0';
+	return *this;
+}
+
 // overloading = operator - initialize object with an existing mystring object
 myString& myString::operator = (myString& B) {
 	delete[] strArray;
@@ -145,140 +177,73 @@ myString& myString::operator = (myString& B) {
 }
 
 // checking if two myString objects are the same - return true or false
-bool myString::operator==(myString &B)
-{
+bool myString::operator==(myString &B){
 	int maxIndex = 0;
-	if (this->size == B.size)
-	{
+	if (this->size == B.size){
 		maxIndex = B.size;
 	}
-	else
-	{
+	else{
 		return false;
 	}
-	char *string1 = this->strArray;
-	char *string2 = B.strArray;
-	for (int i = 0; i < maxIndex; i++)
-	{
-		if (string1[i] != string2[i])
-		{
-			delete[] string1;
-			delete[] string2;
+	for (int i = 0; i < maxIndex; i++){
+		if (this->strArray[i] != B.strArray[i]){
 			return false;
 		}
 	}
-	delete[] string1;
-	delete[] string2;
 	return true;
 }
 
 // comparison of myString A if less than myString B - return true or false
-bool myString::operator<(myString &B)
-{
+bool myString::operator<(myString &B){
 	int maxIndex = 0;
-	char *string1 = this->strArray;
-	char *string2 = B.strArray;
-	if (this->size > B.size)
-	{
+	if (this->size > B.size){
 		maxIndex = B.size;
 	}
-	else
-	{
+	else{
 		maxIndex = this->size;
 	}
-	for (int i = 0; i < maxIndex; i++)
-	{
-		if (string1[i] < string2[i])
-		{
-			delete[] string1;
-			delete[] string2;
+	for (int i = 0; i < maxIndex; i++){
+		if (this->strArray[i] < B.strArray[i]){
 			return true;
 		}
-		else if (string1[i] == string2[i])
-		{
+		else if (this->strArray[i] == B.strArray[i]){
 			continue;
 		}
-		else
-		{
-			delete[] string1;
-			delete[] string2;
+		else{
 			return false;
 		}
 	}
-	delete[] string1;
-	delete[] string2;
 	return false;
 }
 
 // comparison of myString A if greater than myString B - return true or false
-bool myString::operator>(myString &B)
-{
+bool myString::operator>(myString &B){
 	int maxIndex = 0;
-	char *string1 = this->strArray;
-	char *string2 = B.strArray;
-	if (this->size > B.size)
-	{
+	if (this->size > B.size){
 		maxIndex = B.size;
 	}
-	else
-	{
+	else{
 		maxIndex = this->size;
 	}
-	for (int i = 0; i < maxIndex; i++)
-	{
-		if (string1[i] > string2[i])
-		{
-			delete[] string1;
-			delete[] string2;
+	for (int i = 0; i < maxIndex; i++){
+		if (this->strArray[i] > B.strArray[i]){
 			return true;
 		}
-		else if (string1[i] == string2[i])
-		{
+		else if (this->strArray[i] == B.strArray[i]){
 			continue;
 		}
-		else
-		{
-			delete[] string1;
-			delete[] string2;
+		else{
 			return false;
 		}
 	}
-	delete[] string1;
-	delete[] string2;
 	return false;
 }
 
 // get one URL from redirected input and return it as a string
-char* getNextURL() {
-	cout << "getNextUrl" << endl;
-	char* str = new char[50]; //assumes a max URL size of 50
-	emptyString(str, 50);
-
-	char c;
-	int i = 0;
-	//read until the next white space or line-break 
-	while (!cin.eof()) {
-		cin.get(c);
-		if (!cin.eof()) {
-			if ((c != '\n') && (c != ' ')) {
-				if (((c >= 'a') && (c <= 'z')) ||
-					((c >= 'A') && (c <= 'Z')) ||
-					((c >= '0') && (c <= '9')) ||
-					(c >= ':') || (c >= '/') || (c >= '.') || (c >= '_'))
-					str[i++] = c;
-			}
-			else if ((c == '\n') && (i > 0)) {
-				return str;
-			}
-			else if ((c == ' ') && (i > 0)) {
-				return str;
-			}
-
-		}
-	}
-	//modify the following line of code, so that the function returns only the URLs (i.e., it ignores everything that does not start with http:// or https:// )
-	cout << "returnrf null" << endl;
-	return NULL;
+string getNextURL() {
+	string str;
+	getline(cin , str);
+	return str;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,7 +267,8 @@ public:
 
 	void setSize(int i);
 
-	void addURL(myString &u);												  // insert word w into the array _URLs - keep it sorted alphabetically
+	void addURL(myString &u);	
+	void combineURLs();											  // insert word w into the array _URLs - keep it sorted alphabetically
 	void sortFreq();														  // sort words array based on frequency
 	void sortURLs();														  // sort words array alphabetically
 	void display();															  // print word followed by a colon followed by a single space and frequencuy
@@ -359,6 +325,7 @@ void setOfURLs::display()
 // sort the _URLs and _frequencies based on frequencies
 void setOfURLs::sortFreq()
 {
+	
 	for (int i = 0; i < _size; i++)
 	{
 		for (int j = i + 1; j < _size; j++)
@@ -396,33 +363,25 @@ void setOfURLs::sortURLs()
 	}
 }
 
-setOfURLs *setOfURLs::removeURLs(myString *URLsToFilterOut, int numURLsToFilterOut)
-{
+setOfURLs *setOfURLs::removeURLs(myString *URLsToFilterOut, int numURLsToFilterOut){
 	bool isFilteredURL = false;
+	int k =0;
 	setOfURLs *tempSet = new setOfURLs(_size - numURLsToFilterOut);
 	tempSet->_size = _size - numURLsToFilterOut;
-	for (int i = 0; i < _size; i++)
-	{
-		for (int j = 0; j < numURLsToFilterOut; j++)
-		{
-			if (_URLs[i] == URLsToFilterOut[j])
-			{
+	for (int i = 0; i < _size; i++){
+		for (int j = 0; j < numURLsToFilterOut; j++){
+			if (_URLs[i] == URLsToFilterOut[j]){
 				isFilteredURL = true;
 			}
 		}
-		if (!isFilteredURL)
-		{
-			for (int k = 0; k < tempSet->_size; k++)
-			{
-				if (tempSet->_URLs[k].Size() == 0)
-				{
-					tempSet->_URLs[k] = _URLs[i];
-					tempSet->_frequencies[k] = _frequencies[i];
-				}
+		if (!isFilteredURL){
+			if (tempSet->_URLs[k].Size() == 0){
+				tempSet->_URLs[k] = _URLs[i];
+				tempSet->_frequencies[k] = _frequencies[i];
+				k++;
 			}
 		}
-		else
-		{
+		else{
 			isFilteredURL = false;
 		}
 	}
@@ -454,6 +413,12 @@ int setOfURLs::binarySearchAndInsert(myString &wordToFind)
 void setOfURLs::addURL(myString &newWord)
 {
 	cout << endl << "------" << newWord << "------" << endl;
+	for(int i = 0; i < _size; i++){
+		if(_URLs[i] == newWord){
+			_frequencies[i] += 1;
+			return;
+		}
+	}
 	// if there is already unassigend initlized value
 	for (int i = 0; i < _size; i++)
 	{
@@ -474,10 +439,6 @@ void setOfURLs::addURL(myString &newWord)
 	}
 	_frequencies[_size] = 1;
 	temp[_size] = newWord;
-	for(int i = 0; i < _size; i++){
-		cout << i << endl;
-		cout << temp[i] << endl;
-	}
 	//delete[] _URLs;
 	_URLs = temp;
 	//delete[] temp;
@@ -507,20 +468,17 @@ public:
 	void setNeighbors(int nei);
 };
 
-ostream &operator<<(ostream &s, URLLinks &A)
-{
+ostream &operator<<(ostream &s, URLLinks &A){
 	s << A.hyperLinks;
 	return s;
 }
 
-URLLinks::URLLinks()
-{
+URLLinks::URLLinks(){
 	numLinks = 0;
 	hyperLinks = new URLLinks *[0];
 }
 
-URLLinks::URLLinks(myString &x, int n)
-{
+URLLinks::URLLinks(myString &x, int n){
 	URL = x;
 	numLinks = n;
 	hyperLinks = new URLLinks *[numLinks];
@@ -530,32 +488,27 @@ URLLinks::URLLinks(myString &x, int n)
 	}
 }
 
-myString &URLLinks::getURL()
-{
+myString &URLLinks::getURL(){
 	return URL;
 }
 
-int URLLinks::getNumLinks()
-{
+int URLLinks::getNumLinks(){
 	return numLinks;
 }
 
-URLLinks *URLLinks::getHyperLink(int i)
-{
+URLLinks *URLLinks::getHyperLink(int i){
 	return hyperLinks[i];
 }
 
 URLLinks::~URLLinks()
 {
-	for (int i = 0; i < numLinks; i++)
-	{
+	for (int i = 0; i < numLinks; i++){
 		delete[] hyperLinks[i];
 	}
 	delete[] hyperLinks;
 }
 // check this
-void URLLinks::addSite(myString &t)
-{
+void URLLinks::addSite(myString &t){
 	URL = t;
 }
 
@@ -577,57 +530,45 @@ void URLLinks::addNeighbor(URLLinks &link)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int main()
-{
-
+int main(){
 	int numURLsToFilterOut;
-	char *url;
+	string strUrl;
 	myString *urlString;
 	int numPages;
 	int pageNo;
 	int numNeighbors;
 	int neighbor;
+	bool endTheLoop = true;
 
-	cout << endl
-		 << "----------------------------------------------------------" << endl;
 	// read the first number from the file that contains the number of stop words
 	cin >> numURLsToFilterOut;
 	cout << "Number of Stop words: " << numURLsToFilterOut << endl;
 	myString *URLsToFilterOutList = new myString[numURLsToFilterOut];
-	cout << endl
-		 << "----------------------------------------------------------" << endl;
 	// read the stop words
 	for (int i = 0; i < numURLsToFilterOut; i++)
 	{
-		url = getNextURL();
-		URLsToFilterOutList[i] = url; // calls the overloaded = operator on myString class
+		strUrl = getNextURL();
+		URLsToFilterOutList[i] = strUrl; // calls the overloaded = operator on myString class
 	}
-	cout << endl
-		 << "----------------------------------------------------------" << endl;
 	// Now read a text and put them in the setOfURLs instance.
 	setOfURLs *mySetOfURLs = new setOfURLs();
 
-	url = getNextURL();
-	cout << endl
-		 << "----------------------------------------------------------" << endl;
-	while (url != NULL)
-	{
-		cout << "beginning " << endl;
-		if(isUrl(url)){
-			urlString = new myString(url); // create a myString object with the URL
-			cout << "first line" << endl;
+	strUrl = getNextURL();
+
+	cout << endl << "start loop " << endl;
+	while(endTheLoop){
+		if(isUrl(strUrl)){
+			urlString = new myString(strUrl); // create a myString object with the URL
 			(*mySetOfURLs).addURL(*urlString); // add URL to mySetOfURLs
-			//delete[] url;
 		}
-		else{
-			//delete[] url;
+		strUrl = getNextURL();
+		for(int i = 0; i < strLength(strUrl); i++){
+			if(strUrl[i] == '$'){
+				endTheLoop = false;
+			}
 		}
-		cout << "second line" << endl;
-		url = getNextURL();
-		cout << "last line" << endl;
 	}
-	cout << endl
-		 << "----------------------------------------------------------" << endl;
+	cout << endl << "exit loop " << endl;
 	// this should display the URL and frequency;
 	// note that becuase you are using binary search and insert the URLs will
 	// be sorted alphabetically
@@ -657,24 +598,21 @@ int main()
 
 	cin >> numPages;
 	cout << "Number of websites: " << numPages << endl;
-
+	
 	URLLinks *myLinkStructure = new URLLinks[numPages];
-	for (int i = 0; i < numPages; i++)
-	{
+	for (int i = 0; i < numPages; i++){
 		// read all URL and store them in the myLinkStructure array of URLLink objects
 	}
-
+	int hyperlinks[numPages][numNeighbors];
 	// store the neighbours/hyperlinks
-	for (int i = 0; i < numPages; i++)
-	{
+	/*for (int i = 0; i < numPages; i++){
 		cin >> pageNo >> numNeighbors;
 		myLinkStructure[i].setNeighbors(numNeighbors);
-		for (int j = 0; j < numNeighbors; j++)
-		{
+		for (int j = 0; j < numNeighbors; j++){
 			cin >> neighbor;
 			myLinkStructure[pageNo].addNeighbor((myLinkStructure[neighbor]));
 		}
-	}
+	}*/
 
 	// display all URLLink objects using the overloaded << operator
 
